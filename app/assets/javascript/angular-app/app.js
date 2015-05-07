@@ -8,13 +8,23 @@ function($stateProvider, $urlRouterProvider) {
     .state('home', {
       url: '/home',
       templateUrl: 'home/home.html',
-      controller: 'MainCtrl'
+      controller: 'MainCtrl',
+      resolve: {
+        postPromise: ['Post', function(Post){
+          return Post.getAll();
+        }]
+      }
     })
 
     .state('posts', {
       url: '/posts/{id}',
       templateUrl: 'posts/posts.html',
-      controller: 'PostsCtrl'
+      controller: 'PostsCtrl',
+      resolve: {
+        post: ['$stateParams', 'Post', function($stateParams, Post) {
+          return Post.get($stateParams.id);
+        }]
+      }
     });
 
   $urlRouterProvider.otherwise('home');
